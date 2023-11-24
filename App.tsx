@@ -9,11 +9,9 @@ import {
   MD3LightTheme,
 } from "react-native-paper";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import LoginScreen from "./src/pages/login";
-import HomeScreen from "./src/pages/home";
 import { useColorScheme } from "react-native";
 import { useFonts } from "@expo-google-fonts/dev";
-import { LoginChoiceScreen, LoginFormScreen, SignUpChoiceScreen } from "./src/pages";
+import { HomeScreen, LoginChoiceScreen, LoginFormScreen, LoginScreen, SignUpChoiceScreen } from "./src/pages";
 
 const Stack = createNativeStackNavigator();
 const { LightTheme } = adaptNavigationTheme({

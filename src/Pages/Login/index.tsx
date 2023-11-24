@@ -8,7 +8,7 @@ interface Props {
   navigation: NavigationProp<ParamListBase>;
 }
 
-function LoginScreen({ navigation }: Props) {
+export const LoginScreen = ({ navigation }: Props) => {
   return (
     <View style={styles.container}>
       <Background>
@@ -37,6 +37,6 @@ function LoginScreen({ navigation }: Props) {
       </Background>
     </View>
   );
-}
+};
 
 export default LoginScreen;

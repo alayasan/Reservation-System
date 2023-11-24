@@ -3,9 +3,15 @@ import { NavProps } from "../../interface";
 import { Button, Text, TextInput } from "react-native-paper";
 import styles from "../../styles";
 import { useState } from "react";
+import { store } from "../../state";
 
 export const LoginFormScreen = ({ navigation }: NavProps) => {
   const [user, setUser] = useState("");
+
+  const handleLogin = () => {
+    store.username = user;
+    console.log(store.username);
+  }
 
   return (
     <View style={styles.container}>
@@ -26,13 +32,13 @@ export const LoginFormScreen = ({ navigation }: NavProps) => {
       ></TextInput>
       <Button
         mode="elevated"
-        onPress={() => console.log(user)}
+        onPress={() => handleLogin()}
         style={styles.button}
       >
         Login
       </Button>
 
-      <Text>Welcome, {user}</Text>
+      <Text>Welcome, {store.username}</Text>
     </View>
   );
 };
