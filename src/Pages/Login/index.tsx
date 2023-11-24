@@ -1,7 +1,8 @@
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
-import { ImageBackground, View } from "react-native";
-import styles from "./styles";
+import { View } from "react-native";
 import { Avatar, Button, Text } from "react-native-paper";
+import Background from "../../layout/background";
+import styles from "../../styles";
 
 interface Props {
   navigation: NavigationProp<ParamListBase>;
@@ -10,11 +11,7 @@ interface Props {
 function LoginScreen({ navigation }: Props) {
   return (
     <View style={styles.container}>
-      <ImageBackground
-        source={require("../../assets/images/brgy_hall_kauswagan.png")}
-        resizeMode="cover"
-        style={styles.image}
-      >
+      <Background>
         <View style={styles.overlay}>
           <Avatar.Image
             size={150}
@@ -26,20 +23,20 @@ function LoginScreen({ navigation }: Props) {
           </Text>
           <Button
             mode="elevated"
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => navigation.navigate("LoginChoice")}
             style={styles.button}
           >
             <Text style={styles.buttonText}>Login</Text>
           </Button>
           <Button
             mode="elevated"
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => navigation.navigate("SignUpChoice")}
             style={styles.button}
           >
             <Text style={styles.buttonText}>Sign-up</Text>
           </Button>
         </View>
-      </ImageBackground>
+      </Background>
     </View>
   );
 }
