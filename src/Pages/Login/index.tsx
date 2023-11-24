@@ -12,30 +12,28 @@ function LoginScreen({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <Background>
-        <View style={styles.overlay}>
-          <Avatar.Image
-            size={150}
-            source={require("../../assets/images/e-kauswagan-real.png")}
-            style={styles.logo}
-          />
-          <Text variant="headlineLarge" style={[styles.headlineText]}>
-            Barangay Kauswagan Reservation System
-          </Text>
-          <Button
-            mode="elevated"
-            onPress={() => navigation.navigate("LoginChoice")}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>Login</Text>
-          </Button>
-          <Button
-            mode="elevated"
-            onPress={() => navigation.navigate("SignUpChoice")}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>Sign-up</Text>
-          </Button>
-        </View>
+        <Avatar.Image
+          size={150}
+          source={require("../../assets/images/e-kauswagan-real.png")}
+          style={styles.logo}
+        />
+        <Text variant="headlineLarge" style={[styles.headlineText]}>
+          Barangay Kauswagan Reservation System
+        </Text>
+        <Button
+          mode="elevated"
+          onPress={() => navigation.navigate("LoginChoice")}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Login</Text>
+        </Button>
+        <Button
+          mode="elevated"
+          onPress={() => navigation.navigate("SignUpChoice")}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Sign-up</Text>
+        </Button>
       </Background>
     </View>
   );

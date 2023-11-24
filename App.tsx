@@ -13,8 +13,7 @@ import LoginScreen from "./src/pages/login";
 import HomeScreen from "./src/pages/home";
 import { useColorScheme } from "react-native";
 import { useFonts } from "@expo-google-fonts/dev";
-import LoginChoiceScreen from "./src/pages/loginChoice";
-import SignUpChoiceScreen from "./src/pages/signUpChoice";
+import { LoginChoiceScreen, LoginFormScreen, SignUpChoiceScreen } from "./src/pages";
 
 const Stack = createNativeStackNavigator();
 const { LightTheme } = adaptNavigationTheme({
@@ -38,13 +37,14 @@ export default function App() {
     <PaperProvider theme={paperTheme}>
       <NavigationContainer theme={LightTheme}>
         <Stack.Navigator
-          initialRouteName="Login"
+          initialRouteName="LoginForm"
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="LoginChoice" component={LoginChoiceScreen} />
           <Stack.Screen name="SignUpChoice" component={SignUpChoiceScreen} />
+          <Stack.Screen name="LoginForm" component={LoginFormScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

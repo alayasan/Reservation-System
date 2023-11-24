@@ -46,4 +46,11 @@ export default StyleSheet.create({
     backgroundColor: "#fff",
     marginBottom: 50,
   },
+  textInput: {
+    width: "80%",
+    height: 45,
+    backgroundColor: "#fff",
+    marginBottom: 10,
+    elevation: 3,
+  },
 });
