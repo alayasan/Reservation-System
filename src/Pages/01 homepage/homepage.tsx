@@ -1,14 +1,11 @@
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
 import { View } from "react-native";
 import { Avatar, Button, Text } from "react-native-paper";
-import Background from "../../layout/background";
+import Background from "../../layout/background/background";
 import styles from "../../styles";
+import { NavProps } from "../../interface/navProps";
 
-interface Props {
-  navigation: NavigationProp<ParamListBase>;
-}
-
-export const LoginScreen = ({ navigation }: Props) => {
+export const HomePage = ({ navigation }: NavProps) => {
   return (
     <View style={styles.container}>
       <Background>
@@ -18,18 +15,18 @@ export const LoginScreen = ({ navigation }: Props) => {
           style={styles.logo}
         />
         <Text variant="headlineLarge" style={[styles.headlineText]}>
-          Barangay Kauswagan Reservation System
+          Barangay Kauswagan Reservation SYSTEM
         </Text>
         <Button
           mode="elevated"
-          onPress={() => navigation.navigate("LoginChoice")}
+          onPress={() => navigation.navigate("LoginForm")}
           style={styles.button}
         >
           <Text style={styles.buttonText}>Login</Text>
         </Button>
         <Button
           mode="elevated"
-          onPress={() => navigation.navigate("SignUpChoice")}
+          onPress={() => navigation.navigate("SignUpFormScreen")}
           style={styles.button}
         >
           <Text style={styles.buttonText}>Sign-up</Text>
@@ -39,4 +36,4 @@ export const LoginScreen = ({ navigation }: Props) => {
   );
 };
 
-export default LoginScreen;
+export default HomePage;

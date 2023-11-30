@@ -14,13 +14,11 @@ export default StyleSheet.create({
     width: "80%",
     height: 45,
     backgroundColor: "#fff",
-    alignItems: "center",
     justifyContent: "center",
     borderRadius: 30,
     marginTop: 10,
     borderWidth: 2,
-    borderColor: "#fff",
-    elevation: 3,
+    borderColor: "black",
   },
   buttonText: {
     fontSize: 16,
@@ -52,5 +50,8 @@ export default StyleSheet.create({
     backgroundColor: "#fff",
     marginBottom: 10,
     elevation: 3,
+  },
+  icon: {
+    marginLeft: 10,
   },
 });

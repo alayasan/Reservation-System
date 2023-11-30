@@ -3,5 +3,5 @@
     "strict": true
   },
   "extends": ["expo/tsconfig.base", "@tsconfig/react-native/tsconfig.json"],
-  "include": ["**/*.ts", "**/*.tsx", "App.tsx"]
+  "include": ["**/*.ts", "**/*.tsx", "App.tsx", "src/pages/01.2 signupForm"]
 }

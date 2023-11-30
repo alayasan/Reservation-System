@@ -1,5 +1,3 @@
-export * from "./login";
-export * from "./loginChoice";
-export * from "./loginPersonnel";
-export * from "./signUpChoice";
-export * from "./home";
+export * from "./login/login";
+export * from "./01.1 loginForm/loginForm";
+export * from "./01 homepage/homepage";
