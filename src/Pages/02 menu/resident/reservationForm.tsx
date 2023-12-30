@@ -224,7 +224,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
           <View style={[styles.checkboxContainer]}>
             <View style={[styles.imageItems]}>
               <Image
-                source={require("../../../assets/images/chair.png")}
+                source={require("../../../assets/images/monobloc.png")}
                 style={{ width: 60, height: 60 }}
               />
             </View>
