@@ -2,33 +2,88 @@ import {
   View,
   Keyboard,
   TouchableWithoutFeedback,
-  KeyboardAvoidingView,
+  TouchableOpacity,
+  Alert,
 } from "react-native";
 import { NavProps } from "../../interface/navProps";
-import { Button, Text, TextInput } from "react-native-paper";
+import { ActivityIndicator, Button, Text, TextInput } from "react-native-paper";
 import styles from "../../styles";
-import { useState } from "react";
-import { store } from "../../state";
+import { useEffect, useState } from "react";
 import { Image } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons"; 
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../../../firebaseConfig";
+import { getDoc, doc } from "firebase/firestore";
+import React from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigation } from "@react-navigation/native";
+import { validateEmail } from "../../functions";
 
 export const LoginFormScreen = ({ navigation }: NavProps) => {
-  const [user, setUser] = useState("");
+  const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
-
-  const handleLogin = () => {
-    store.username = user;
-    console.log(store.username);
-  };
+  const [loading, setLoading] = useState(false);
+  const auth = FIREBASE_AUTH;
+    const [emailError, setEmailError] = useState<string | null>(null);
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
-  }; 
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("blur", () => {
+      setEmail("");
+      setPassword("");
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+
+  const signIn = async () => {
+    setLoading(true);
+    try {
+      const response = await signInWithEmailAndPassword(auth, email, password);
+      console.log(response);
+
+      if (response.user) {
+        // Get the user's role from the Firestore database
+        const userDoc = doc(FIREBASE_DB, "users", response.user.uid);
+        const userDocSnapshot = await getDoc(userDoc);
+        const userData = userDocSnapshot.data();
+
+        if (userData) {
+          const role = userData.role;
+          console.log("User data: ", userData);
+          console.log("Role: ", role);
+          Alert.alert("Success ✅", "You have successfully logged in.");
+
+          // Navigate to the appropriate screen based on the user's role
+          if (role === "admin") {
+            navigation.navigate("Admin", { screen: "AdminMenu" });
+            console.log("Admin");
+          } else {
+            // Default to "ResidentMenu" if the role is not "admin"
+            navigation.navigate("Resident", { screen: "ResidentMenu" });
+            console.log("Resident");
+          }
+        }
+      }
+    } catch (error: any) {
+      console.log(error);
+      if (error.code === "auth/invalid-credential") {
+        Alert.alert("Error ❌", "Invalid credentials or the account does not exist. Please try again.");
+      } else {
+        Alert.alert("Error ❌", "Unsuccessful login.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={[styles.container, { backgroundColor: "#F1F4F8" }]}>
+      <View style={[styles.container]}>
         <Image
           style={{
             width: 150,
@@ -39,23 +94,34 @@ export const LoginFormScreen = ({ navigation }: NavProps) => {
           source={require("../../assets/images/profile.png")}
         />
         <TextInput
+          value={email}
           label={"Email"}
           activeUnderlineColor="blue"
+          autoCapitalize="none"
+          onChangeText={(email) => {
+            setEmail(email);
+            if (!validateEmail(email)) {
+              setEmailError("Invalid email format");
+            } else {
+              setEmailError(null);
+            }
+          }}
+          error={emailError}
           placeholder="abcd@gmail.com"
           placeholderTextColor="rgba(0, 0, 0, 0.5)"
           style={[styles.textInput, { height: 60 }]}
-          value={user}
-          onChangeText={setUser}
+          keyboardType="email-address"
         ></TextInput>
 
         <TextInput
+          value={password}
           label={"Password"}
           placeholder="*******"
           placeholderTextColor="rgba(0, 0, 0, 0.5)"
           activeUnderlineColor="blue"
+          autoCapitalize="none"
           secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
+          onChangeText={(text) => setPassword(text)}
           style={[styles.textInput, { height: 60 }]}
         />
         <MaterialCommunityIcons
@@ -65,13 +131,29 @@ export const LoginFormScreen = ({ navigation }: NavProps) => {
           style={styles.icon}
           onPress={toggleShowPassword}
         />
-        <Button
-          mode="elevated"
-          onPress={() => handleLogin()}
-          style={{ width: "30%", backgroundColor: "#fff", marginTop: 20 }}
-        >
-          Login
-        </Button>
+
+        {loading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          <>
+            <Button
+              mode="elevated"
+              style={{ width: "30%", backgroundColor: "#fff", marginTop: 20 }}
+              onPress={signIn}
+            >
+              Login
+            </Button>
+          </>
+        )}
+
+        <View style={{ flexDirection: "row", marginTop: 30 }}>
+          <Text style={{ marginRight: 3 }}>Don't have an account?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("SignupForm")}>
+            <Text style={{ color: "blue", fontWeight: "bold" }}>
+              Sign up here.
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );

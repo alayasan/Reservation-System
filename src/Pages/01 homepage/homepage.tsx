@@ -17,6 +17,7 @@ export const HomePage = ({ navigation }: NavProps) => {
         <Text variant="headlineLarge" style={[styles.headlineText]}>
           Barangay Kauswagan Reservation SYSTEM
         </Text>
+
         <Button
           mode="elevated"
           onPress={() => navigation.navigate("LoginForm")}
@@ -24,9 +25,10 @@ export const HomePage = ({ navigation }: NavProps) => {
         >
           <Text style={styles.buttonText}>Login</Text>
         </Button>
+
         <Button
           mode="elevated"
-          onPress={() => navigation.navigate("SignUpFormScreen")}
+          onPress={() => navigation.navigate("SignupForm")}
           style={styles.button}
         >
           <Text style={styles.buttonText}>Sign-up</Text>

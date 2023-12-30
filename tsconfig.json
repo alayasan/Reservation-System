@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "strict": true
+    //"strict": true
+    "paths": {
+      "@firebase/auth": ["./node_modules/@firebase/auth/dist/index.rn.d.ts"]
+    }
   },
   "extends": ["expo/tsconfig.base", "@tsconfig/react-native/tsconfig.json"],
   "include": ["**/*.ts", "**/*.tsx", "App.tsx", "src/pages/01.2 signupForm"]

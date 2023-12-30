@@ -21,12 +21,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.sowen.AwesomeProject"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
+      "eas": {
+        "projectId": "60c33644-677d-47c1-a24c-e5465192d07c"
+      }
     }
   }
 }

@@ -6,6 +6,20 @@ export default StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+
+  text: {
+    fontSize: 14,
+    // fontWeight: "bold",
+    // fontFamily: "JosefinSans",
+    textAlign: "center",
+  },
+
+  signupContainer: {
+    flex: 1,
+    alignItems: "center",
+    marginTop: 30,
+    paddingBottom: 20,
+  },
   image: {
     flex: 1,
     width: "100%",
@@ -48,10 +62,44 @@ export default StyleSheet.create({
     width: "80%",
     height: 45,
     backgroundColor: "#fff",
-    marginBottom: 10,
+    marginBottom: 5,
     elevation: 3,
   },
   icon: {
     marginLeft: 10,
+  },
+  imageItems: {
+    width: 60,
+    height: 60,
+    borderRadius: 12,
+    backgroundColor: "green",
+    marginRight: 10,
+    marginLeft: 10,
+    overflow: "hidden",
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 10,
+    backgroundColor: "rgba(128, 128, 128, 0.1)",
+    borderRadius: 22,
+    marginBottom: 5,
+  },
+  checkboxPos: {
+    flex: 1,
+    alignItems: "flex-end",
+    marginRight: 10,
+  },
+
+  submitButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 100,
+    height: 40,
+    backgroundColor: "#F9CF58",
+    borderColor: "#14181B",
+    borderWidth: 1, // This sets the border width
+    borderRadius: 30,
+    marginTop: 10
   },
 });
