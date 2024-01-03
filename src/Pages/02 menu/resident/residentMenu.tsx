@@ -9,42 +9,44 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Profile } from "./profile";
-import { MainMenu } from "./mainMenu";
+import { ResidentMenuPage } from "./mainMenu";
 import StatusPage from "./statusPage";
 
 const Tab = createBottomTabNavigator();
 
 const ResidentMenu = ({ navigation }: NavProps) => {
-  const auth = FIREBASE_AUTH;
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigation.navigate("LoginForm"); // navigate back to login screen
-      console.log("User signed out");
-
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "LoginForm" }],
-      });
-    } catch (error) {
-      console.error("Error signing out: ", error);
-    }
-  };
-
   return (
     <Tab.Navigator
-    screenOptions={{
+      screenOptions={{
         // headerShown: false,
-        tabBarActiveTintColor: 'tomato',
-        tabBarInactiveTintColor: 'gray',
+        tabBarActiveTintColor: "tomato",
+        tabBarInactiveTintColor: "black",
+        tabBarStyle: {
+          paddingBottom: 5,
+          height: 50,
+        },
       }}
-      >
+    >
       <Tab.Screen
-        name="Main Menu"
-        component={MainMenu}
+        name="Home"
+        component={ResidentMenuPage}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" color={color} size={size} />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Status"
+        component={StatusPage}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="format-list-checks"
+              color={color}
+              size={size}
+            />
           ),
         }}
       />
@@ -59,31 +61,6 @@ const ResidentMenu = ({ navigation }: NavProps) => {
           // headerShown: false,
         }}
       />
-
-      <Tab.Screen
-        name="Status"
-        component={StatusPage}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="format-list-checks" color={color} size={size} />
-          ),
-        }}
-      />
-
-      <Tab.Screen name="Logout" options={{ title: "Logout" }}>
-        {() => (
-          <View style={[styles.container]}>
-            <Text>Resident...</Text>
-            <Button
-              mode="elevated"
-              onPress={handleLogout}
-              style={styles.button}
-            >
-              <Text style={styles.buttonText}>Logout</Text>
-            </Button>
-          </View>
-        )}
-      </Tab.Screen>
     </Tab.Navigator>
   );
 };

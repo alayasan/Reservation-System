@@ -13,9 +13,13 @@ import { useColorScheme } from "react-native";
 import { useFonts } from "@expo-google-fonts/dev";
 import { HomePage, LoginFormScreen, SignUpScreen } from "./src/pages";
 import AdminMenu from "./src/pages/02 menu/admin/adminMenu";
-import ReservationPage from "./src/pages/02 menu/resident/ReservationPage";
 import ResidentMenu from "./src/pages/02 menu/resident/residentMenu";
 import StatusDetails from "./src/pages/02 menu/resident/statusDetails";
+import ReservationPage from "./src/pages/02 menu/resident/reservationForm";
+import ApprovalPage from "./src/pages/02 menu/admin/approvalPage";
+import ReservationDetails from "./src/pages/02 menu/admin/reservationDetails";
+import UploadDocument from "./src/pages/02 menu/admin/uploadDocument";
+import Rejectpage from "./src/pages/02 menu/admin/reject";
 
 const Stack = createNativeStackNavigator();
 const AdminStack = createNativeStackNavigator();
@@ -71,10 +75,29 @@ export default function App() {
           />
           <Stack.Screen name="Admin" options={{ headerShown: false }}>
             {() => (
-              <AdminStack.Navigator>
+              <AdminStack.Navigator initialRouteName="AdminMenu">
                 <AdminStack.Screen
                   name="AdminMenu"
                   component={AdminMenu}
+                  options={{ headerShown: false }}
+                />
+                <AdminStack.Screen
+                  name="Reservation Forms Submitted"
+                  component={ApprovalPage}
+                />
+                <AdminStack.Screen
+                  name="Reservation Details"
+                  component={ReservationDetails}
+                  options={{ headerTitle: "" }}
+                />
+                <AdminStack.Screen
+                  name="Upload Document"
+                  component={UploadDocument}
+                  options={{ headerShown: false }}
+                />
+                <AdminStack.Screen
+                  name="Reject"
+                  component={Rejectpage}
                   options={{ headerShown: false }}
                 />
               </AdminStack.Navigator>
@@ -82,7 +105,6 @@ export default function App() {
           </Stack.Screen>
           <Stack.Screen name="Resident" options={{ headerShown: false }}>
             {() => (
-              // <ResidentStack.Navigator>
               <ResidentStack.Navigator initialRouteName="ResidentMenu">
                 <ResidentStack.Screen
                   name="ResidentMenu"
@@ -96,11 +118,13 @@ export default function App() {
                 <ResidentStack.Screen
                   name="Status Details"
                   component={StatusDetails}
+                  options={{
+                    headerTransparent: true,
+                    headerTitle: "",
+                    headerBackTitleVisible: false,
+                    headerTintColor: "#000", // Change this color to match your design
+                  }}
                 />
-                {/* <ResidentStack.Screen
-                  name="Upload Proof"
-                  component={UploadProof}
-                /> */}
               </ResidentStack.Navigator>
             )}
           </Stack.Screen>

@@ -1,9 +1,13 @@
-import Reac, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, SafeAreaView } from "react-native";
+import { Button } from "react-native-paper";
 import { doc, getDoc } from "firebase/firestore";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../../firebaseConfig";
+import styles from "../../../styles";
+import { signOut } from "firebase/auth";
+import { NavProps } from "../../../interface/navProps";
 
-export function Profile() {
+export function Profile({ navigation }: NavProps) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -25,6 +29,21 @@ export function Profile() {
 
     fetchUser();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(FIREBASE_AUTH);
+      navigation.navigate("LoginForm"); // navigate back to login screen
+      console.log("User signed out");
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "LoginForm" }],
+      });
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -53,6 +72,18 @@ export function Profile() {
           <Text>{user?.phonenumber}</Text>
           <Text>{user?.email}</Text>
         </View>
+      </View>
+      <View
+        style={{
+          alignItems: "center",
+          flex: 1,
+          justifyContent: "flex-end",
+          paddingBottom: 20,
+        }}
+      >
+        <Button mode="elevated" onPress={handleLogout} style={styles.button}>
+          <Text style={styles.buttonText}>Logout</Text>
+        </Button>
       </View>
     </SafeAreaView>
   );

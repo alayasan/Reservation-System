@@ -9,14 +9,14 @@ import { NavProps } from "../../interface/navProps";
 import { ActivityIndicator, Button, Text, TextInput } from "react-native-paper";
 import styles from "../../styles";
 import { useEffect, useState } from "react";
-import { Image } from "react-native";
+import { Image, BackHandler, ToastAndroid } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../firebaseConfig";
 import { getDoc, doc } from "firebase/firestore";
 import React from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useNavigation } from "@react-navigation/native";
 import { validateEmail } from "../../functions";
+import { CommonActions } from "@react-navigation/native";
 
 export const LoginFormScreen = ({ navigation }: NavProps) => {
   const [email, setEmail] = useState("");
@@ -39,7 +39,6 @@ export const LoginFormScreen = ({ navigation }: NavProps) => {
     return unsubscribe;
   }, [navigation]);
 
-
   const signIn = async () => {
     setLoading(true);
     try {
@@ -47,24 +46,33 @@ export const LoginFormScreen = ({ navigation }: NavProps) => {
       console.log(response);
 
       if (response.user) {
-        // Get the user's role from the Firestore database
         const userDoc = doc(FIREBASE_DB, "users", response.user.uid);
         const userDocSnapshot = await getDoc(userDoc);
         const userData = userDocSnapshot.data();
 
         if (userData) {
-          const role = userData.role;
+          const type = userData.type;
           console.log("User data: ", userData);
-          console.log("Role: ", role);
+          console.log("Type: ", type);
           Alert.alert("Success ✅", "You have successfully logged in.");
 
-          // Navigate to the appropriate screen based on the user's role
-          if (role === "admin") {
-            navigation.navigate("Admin", { screen: "AdminMenu" });
+          if (type === "admin") {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: "Admin", params: { screen: "AdminMenu" } }],
+              })
+            );
             console.log("Admin");
           } else {
-            // Default to "ResidentMenu" if the role is not "admin"
-            navigation.navigate("Resident", { screen: "ResidentMenu" });
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [
+                  { name: "Resident", params: { screen: "ResidentMenu" } },
+                ],
+              })
+            );
             console.log("Resident");
           }
         }

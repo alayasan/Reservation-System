@@ -52,6 +52,7 @@ export const SignUpScreen = ({ navigation }: NavProps) => {
         phonenumber,
         address,
         password,
+        type: "resident"
       });
       Alert.alert("Success ✅", "You have successfully created an account.");
       console.log("User account created & signed in!");

@@ -18,6 +18,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { push, ref, set } from "firebase/database";
 import { FIREBASE_AUTH, FIREBASE_DATABASE } from "../../../../firebaseConfig";
 
+
 const ReservationPage = ({ navigation }: NavProps) => {
   const [borrowDate, setBorrowDate] = useState(new Date());
   const [returnDate, setReturnDate] = useState(new Date());
@@ -27,6 +28,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
   const [isChecked2, setIsChecked2] = useState(false);
   const [isChecked3, setIsChecked3] = useState(false);
   const [isChecked4, setIsChecked4] = useState(false);
+  const [activePhonenumber, setActivePhonenumber] = useState("");
   const [borrower, setBorrower] = useState("");
   const [address, setAddress] = useState("");
   const [purpose, setPurpose] = useState("");
@@ -79,15 +81,18 @@ const ReservationPage = ({ navigation }: NavProps) => {
           borrower,
           address,
           purpose,
-          borrowDate: borrowDate.toString(),
-          returnDate: returnDate.toString(),
+          borrowDate: borrowDate.toLocaleDateString(),
+          returnDate: returnDate.toLocaleDateString(),
+          activePhonenumber,
           status: "pending",
+          type: "resident",
           items: {
             monoblocChair: isChecked1,
             tent: isChecked2,
             soundSystem: isChecked3,
             serviceVehicle: isChecked4,
           },
+
         });
 
         console.log(
@@ -157,6 +162,14 @@ const ReservationPage = ({ navigation }: NavProps) => {
             onChangeText={(address) => setAddress(address)}
           ></TextInput>
           <TextInput
+            label="Active Phone Number"
+            value={activePhonenumber}
+            style={[styles.textInput, { width: "100%", height: 70 }]}
+            onChangeText={(activePhonenumber) => setActivePhonenumber(activePhonenumber)}
+            keyboardType="number-pad"
+            maxLength={11}
+          ></TextInput>
+          <TextInput
             label="Purpose/Reason to Borrow"
             value={purpose}
             style={[styles.textInput, { width: "100%", height: 100 }]}
@@ -172,7 +185,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
               fontWeight: "bold",
             }}
           >
-            Date of Borrowing: Date of Return:
+            Date of Borrowing:                      Date of Return:
           </Text>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
@@ -311,7 +324,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
                   fontWeight: "bold",
                 }}
               >
-                Next
+                Submit
               </Text>
             </TouchableOpacity>
           </View>

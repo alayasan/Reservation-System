@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { FIREBASE_AUTH, FIREBASE_DATABASE } from "../../../../firebaseConfig";
 import { ref, onValue, DataSnapshot } from "firebase/database";
 import { Ionicons } from "@expo/vector-icons";
@@ -34,7 +34,7 @@ const StatusPage = ({ navigation }: NavProps) => {
   }, []);
 
   return (
-    <View style={{ marginTop: 10 }}>
+    <ScrollView style={{ marginTop: 10 }}>
       {reservations.map((reservation) => (
         <View
           key={reservation.id}
@@ -48,10 +48,10 @@ const StatusPage = ({ navigation }: NavProps) => {
             borderRadius: 10,
             backgroundColor:
               reservation.status === "approved"
-                ? "lightgreen"
+                ? "rgba(36, 150, 137, 0.8)"
                 : reservation.status === "rejected"
-                ? "#FF7F7F"
-                : "lightgray",
+                ? "rgba(255, 89, 99, 1)"
+                : "rgba(224, 227, 231, 100)",
           }}
         >
           <View>
@@ -72,7 +72,7 @@ const StatusPage = ({ navigation }: NavProps) => {
           </TouchableOpacity>
         </View>
       ))}
-    </View>
+    </ScrollView>
   );
 };
 

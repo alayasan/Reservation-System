@@ -4,7 +4,7 @@ import { Button } from "react-native-paper";
 import styles from "../../../styles";
 import { NavProps } from "../../../interface/navProps";
 
-export function MainMenu({ navigation }: NavProps) {
+export function ResidentMenuPage({ navigation }: NavProps) {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Button

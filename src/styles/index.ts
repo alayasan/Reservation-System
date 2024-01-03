@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
+  
   container: {
     flex: 1,
     alignItems: "center",
@@ -31,7 +32,7 @@ export default StyleSheet.create({
     justifyContent: "center",
     borderRadius: 30,
     marginTop: 10,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: "black",
   },
   buttonText: {
@@ -100,6 +101,80 @@ export default StyleSheet.create({
     borderColor: "#14181B",
     borderWidth: 1, // This sets the border width
     borderRadius: 30,
-    marginTop: 10
+    marginTop: 10,
   },
+
+  parentContainer: {
+    flex: 1,
+    // justifyContent: "center",
+    // alignItems: "center",
+    paddingHorizontal: 10,
+  },
+  approvalContainer: {
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: "rgba(128, 128, 128, 0.1)",
+    margin: 5,
+    borderColor: "black",
+    borderWidth: 1,
+  },
+
+  textApprovalPage: {
+    fontSize: 18,
+  },
+
+  reservationDetails: {
+    fontSize: 24,
+    fontWeight: "bold",
+    padding: 10,
+    paddingBottom: -10,
+  },
+
+  reservationDetailsSubtext: {
+    fontSize: 18,
+    padding: 10,
+    paddingTop: 5,
+    paddingBottom: -10,
+  },
+
+  backgroundApprove: {
+    // backgroundColor: "rgba(75, 57, 239, 100)",
+    backgroundColor: "rgba(36, 150, 137, 0.8)",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  backgroundReject: {
+    backgroundColor: "rgba(255, 89, 99, 1)",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  backgroundStatus: {
+    backgroundColor: "rgba(224, 227, 231, 100)",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  content: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10, // Change this to your desired border radius
+    padding: 20,
+    width: "85%",
+    height: "65%", // Adjust width as needed
+  },
+
+  upload: {
+    textAlign: "center",
+    fontSize: 28,
+    fontWeight: "bold",
+  },
+
+  example: {
+    marginVertical: 24,
+  },
+
+  
 });
