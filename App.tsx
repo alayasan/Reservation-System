@@ -111,10 +111,10 @@ export default function App() {
                   component={ResidentMenu}
                   options={{ headerShown: false }}
                 />
-                <ResidentStack.Screen
+                {/* <ResidentStack.Screen
                   name="Reservation Form"
                   component={ReservationPage}
-                />
+                /> */}
                 <ResidentStack.Screen
                   name="Status Details"
                   component={StatusDetails}

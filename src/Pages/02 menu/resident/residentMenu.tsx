@@ -11,6 +11,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { Profile } from "./profile";
 import { ResidentMenuPage } from "./mainMenu";
 import StatusPage from "./statusPage";
+import ReservationPage from "./reservationForm";
 
 const Tab = createBottomTabNavigator();
 
@@ -28,11 +29,11 @@ const ResidentMenu = ({ navigation }: NavProps) => {
       }}
     >
       <Tab.Screen
-        name="Home"
-        component={ResidentMenuPage}
+        name="Reservation Form"
+        component={ReservationPage}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" color={color} size={size} />
+            <Ionicons name="bookmarks" color={color} size={size} />
           ),
         }}
       />

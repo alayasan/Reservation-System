@@ -8,16 +8,17 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  Modal,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Checkbox from "react-native-check-box";
 import styles from "../../../styles";
 import { NavProps } from "../../../interface/navProps";
-import { TextInput } from "react-native-paper";
+import { DefaultTheme, TextInput } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { push, ref, set } from "firebase/database";
-import { FIREBASE_AUTH, FIREBASE_DATABASE } from "../../../../firebaseConfig";
-
+import { FIREBASE_AUTH, FIREBASE_DATABASE, FIREBASE_DB } from "../../../../firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
 
 const ReservationPage = ({ navigation }: NavProps) => {
   const [borrowDate, setBorrowDate] = useState(new Date());
@@ -37,8 +38,33 @@ const ReservationPage = ({ navigation }: NavProps) => {
   const [mode, setMode] = useState<"date" | "time" | "datetime" | "countdown">(
     "date"
   );
-  const auth = FIREBASE_AUTH;
-  const user = auth.currentUser;
+
+  const [modalVisible1, setModalVisible1] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
+  const [quantity1, setQuantity1] = useState("");
+  const [quantity2, setQuantity2] = useState("");
+
+  const [getUser, setGetUser] = useState(null);
+  const user = FIREBASE_AUTH.currentUser;
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const getUser = FIREBASE_AUTH.currentUser;
+
+      if (getUser) {
+        const docRef = doc(FIREBASE_DB, "users", getUser.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setGetUser(docSnap.data());
+        } else {
+          console.log("No such document!");
+        }
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const onChangeBorrow = (e: any, selectedDate: Date | undefined) => {
     const currentDate = selectedDate || borrowDate;
@@ -63,8 +89,38 @@ const ReservationPage = ({ navigation }: NavProps) => {
     setMode("date");
   };
 
+  const handleCheckboxChange1 = () => {
+    setIsChecked1(!isChecked1);
+    if (!isChecked1) {
+      setModalVisible1(true);
+    }
+  };
+
+  const handleCheckboxChange2 = () => {
+    setIsChecked2(!isChecked2);
+    if (!isChecked2) {
+      setModalVisible2(true);
+    }
+  };
+
+  const handleModalClose1 = () => {
+    if (quantity1 === "" || isNaN(quantity1) || quantity1 === "0") {
+      Alert.alert("Please enter a valid number for the quantity of Monobloc Chairs.");
+    } else {
+      setModalVisible1(false);
+    }
+  };
+
+  const handleModalClose2 = () => {
+    if (quantity2 === "" || isNaN(quantity2) || quantity2 === "0") {
+      Alert.alert("Please enter a valid number for the quantity of Tents.");
+    } else {
+      setModalVisible2(false);
+    }
+  };
+
   const handleSubmit = async () => {
-    if (!borrower || !address || !purpose || !borrowDate || !returnDate) {
+    if ( !activePhonenumber || !purpose || !borrowDate || !returnDate) {
       console.error("All fields are required.");
       setIsButtonDisabled(true);
       return;
@@ -78,8 +134,8 @@ const ReservationPage = ({ navigation }: NavProps) => {
           ref(FIREBASE_DATABASE, `reservations/${user.uid}`)
         );
         await set(newReservationRef, {
-          borrower,
-          address,
+          borrower: `${getUser.firstname} ${getUser.lastname}`,
+          address: `${getUser.address}`,
           purpose,
           borrowDate: borrowDate.toLocaleDateString(),
           returnDate: returnDate.toLocaleDateString(),
@@ -87,8 +143,8 @@ const ReservationPage = ({ navigation }: NavProps) => {
           status: "pending",
           type: "resident",
           items: {
-            monoblocChair: isChecked1,
-            tent: isChecked2,
+            monoblocChair: isChecked1 ? quantity1: 0,
+            tent: isChecked2 ? quantity2 : 0,
             soundSystem: isChecked3,
             serviceVehicle: isChecked4,
           },
@@ -121,6 +177,14 @@ const ReservationPage = ({ navigation }: NavProps) => {
     }
   };
 
+  const theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: activePhonenumber ? "green" : "red",
+    },
+  };
+
   useEffect(() => {
     if (borrower && address && purpose && borrowDate && returnDate) {
       setIsButtonDisabled(false);
@@ -149,26 +213,34 @@ const ReservationPage = ({ navigation }: NavProps) => {
           </View>
           <TextInput
             label="Name of Borrower"
-            value={borrower}
+            value={getUser ? `${getUser.firstname} ${getUser.lastname}` : ""}
+            editable={false}
+            // value={borrower}
             style={[styles.textInput, { width: "100%", height: 60 }]}
             onChangeText={(borrower) => setBorrower(borrower)}
           ></TextInput>
           <TextInput
             label="Address"
-            value={address}
+            value={getUser ? `${getUser.address}` : ""}
+            editable={false}
             style={[styles.textInput, { width: "100%", height: 70 }]}
             multiline
             numberOfLines={2}
             onChangeText={(address) => setAddress(address)}
           ></TextInput>
+
           <TextInput
-            label="Active Phone Number"
+            label="Contact Number"
             value={activePhonenumber}
             style={[styles.textInput, { width: "100%", height: 70 }]}
-            onChangeText={(activePhonenumber) => setActivePhonenumber(activePhonenumber)}
+            onChangeText={(activePhonenumber) =>
+              setActivePhonenumber(activePhonenumber)
+            }
             keyboardType="number-pad"
             maxLength={11}
+            theme={theme}
           ></TextInput>
+
           <TextInput
             label="Purpose/Reason to Borrow"
             value={purpose}
@@ -176,6 +248,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
             multiline
             numberOfLines={3}
             onChangeText={(purpose) => setPurpose(purpose)}
+            theme={theme}
           ></TextInput>
           <Text
             style={{
@@ -185,7 +258,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
               fontWeight: "bold",
             }}
           >
-            Date of Borrowing:                      Date of Return:
+            Date of Borrowing: Date of Return:
           </Text>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
@@ -245,12 +318,53 @@ const ReservationPage = ({ navigation }: NavProps) => {
             <View style={[styles.checkboxPos]}>
               <Checkbox
                 isChecked={isChecked1}
-                onClick={() => setIsChecked1(!isChecked1)}
+                onClick={handleCheckboxChange1}
                 checkedCheckBoxColor="green"
                 uncheckedCheckBoxColor="black"
+                rightText={"Monobloc Chair"}
               />
+              {isChecked1 && (
+                <Text style={{ fontSize: 10 }}>Quantity: {quantity1}</Text>
+              )}
             </View>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible1}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    padding: 20,
+                    borderRadius: 10,
+                  }}
+                >
+                  <Text>Enter quantity:</Text>
+                  <TextInput
+                    style={{
+                      height: 40,
+                      borderColor: "gray",
+                      borderWidth: 1,
+                      marginVertical: 10,
+                    }}
+                    onChangeText={setQuantity1}
+                    value={quantity1}
+                    keyboardType="numeric"
+                  />
+                  <Button title="OK" onPress={handleModalClose1} />
+                </View>
+              </View>
+            </Modal>
           </View>
+
           <View style={[styles.checkboxContainer]}>
             <View style={[styles.imageItems]}>
               <Image
@@ -262,12 +376,53 @@ const ReservationPage = ({ navigation }: NavProps) => {
             <View style={[styles.checkboxPos]}>
               <Checkbox
                 isChecked={isChecked2}
-                onClick={() => setIsChecked2(!isChecked2)}
+                onClick={handleCheckboxChange2}
                 checkedCheckBoxColor="green"
                 uncheckedCheckBoxColor="black"
+                rightText={"Tent"}
               />
+              {isChecked2 && (
+                <Text style={{ fontSize: 10 }}>Quantity: {quantity2}</Text>
+              )}
             </View>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible2}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    padding: 20,
+                    borderRadius: 10,
+                  }}
+                >
+                  <Text>Enter quantity:</Text>
+                  <TextInput
+                    style={{
+                      height: 40,
+                      borderColor: "gray",
+                      borderWidth: 1,
+                      marginVertical: 10,
+                    }}
+                    onChangeText={setQuantity2}
+                    value={quantity2}
+                    keyboardType="numeric"
+                  />
+                  <Button title="OK" onPress={handleModalClose2} />
+                </View>
+              </View>
+            </Modal>
           </View>
+
           <View style={[styles.checkboxContainer]}>
             <View style={[styles.imageItems]}>
               <Image
@@ -282,6 +437,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
                 onClick={() => setIsChecked3(!isChecked3)}
                 checkedCheckBoxColor="green"
                 uncheckedCheckBoxColor="black"
+                rightText={"Sound System"}
               />
             </View>
           </View>
@@ -299,6 +455,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
                 onClick={() => setIsChecked4(!isChecked4)}
                 checkedCheckBoxColor="green"
                 uncheckedCheckBoxColor="black"
+                rightText={"Service Car"}
               />
             </View>
           </View>
@@ -306,10 +463,9 @@ const ReservationPage = ({ navigation }: NavProps) => {
             <TouchableOpacity
               style={[
                 styles.submitButton,
-                { opacity: isButtonDisabled ? 0.5 : 1 },
               ]}
               disabled={
-                !borrower || !address || !purpose || !borrowDate || !returnDate
+              !activePhonenumber || !purpose || !borrowDate || !returnDate
               }
               onPress={() => {
                 handleSubmit();

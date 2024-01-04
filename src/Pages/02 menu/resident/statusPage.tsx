@@ -34,43 +34,40 @@ const StatusPage = ({ navigation }: NavProps) => {
   }, []);
 
   return (
-    <ScrollView style={{ marginTop: 10 }}>
+    <ScrollView style={{ marginTop: 5 }}>
       {reservations.map((reservation) => (
-        <View
+        <TouchableOpacity
           key={reservation.id}
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 5,
-            marginHorizontal: 10,
-            padding: 15,
-            borderRadius: 10,
-            backgroundColor:
-              reservation.status === "approved"
-                ? "rgba(36, 150, 137, 0.8)"
-                : reservation.status === "rejected"
-                ? "rgba(255, 89, 99, 1)"
-                : "rgba(224, 227, 231, 100)",
-          }}
+          onPress={() => navigation.navigate("Status Details", { reservation })}
         >
-          <View>
-            <Text style={{ fontSize: 16 }}>
-              Reservation ID: {reservation.id}
-            </Text>
-            <Text style={{ fontSize: 16, textTransform: "capitalize" }}>
-              Status: {reservation.status}
-            </Text>
-          </View>
-          <TouchableOpacity
-            key={reservation.id}
-            onPress={() =>
-              navigation.navigate("Status Details", { reservation })
-            }
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 15,
+              marginVertical: 2,
+              marginHorizontal: 10,
+              borderRadius: 10,
+              backgroundColor:
+                reservation.status === "approved"
+                  ? "rgba(36, 150, 137, 0.8)"
+                  : reservation.status === "rejected"
+                  ? "rgba(255, 89, 99, 1)"
+                  : "rgba(224, 227, 231, 100)",
+            }}
           >
+            <View>
+              <Text style={{ fontSize: 16 }}>
+                Reservation ID: {reservation.id}
+              </Text>
+              <Text style={{ fontSize: 16, textTransform: "capitalize" }}>
+                Status: {reservation.status}
+              </Text>
+            </View>
             <Ionicons name="chevron-forward-outline" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableOpacity>
       ))}
     </ScrollView>
   );

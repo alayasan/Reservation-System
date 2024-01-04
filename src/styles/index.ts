@@ -1,7 +1,6 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  
   container: {
     flex: 1,
     alignItems: "center",
@@ -130,6 +129,15 @@ export default StyleSheet.create({
     paddingBottom: -10,
   },
 
+  reservationsubDetails: {
+    backgroundColor: "rgba(224, 227, 231, 100)",
+    marginTop: 10,
+    padding: 10,
+    borderRadius: 10,
+    borderColor: "black",
+    borderWidth: 1,
+  },
+
   reservationDetailsSubtext: {
     fontSize: 18,
     padding: 10,
@@ -175,6 +183,4 @@ export default StyleSheet.create({
   example: {
     marginVertical: 24,
   },
-
-  
 });

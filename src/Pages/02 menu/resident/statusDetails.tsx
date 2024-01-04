@@ -6,6 +6,7 @@ import { getFilenameFromDB } from "./downloadFile/getfilename";
 import { ref, onValue } from "firebase/database";
 import { FIREBASE_DATABASE } from "../../../../firebaseConfig";
 import { NavProps } from "../../../interface/navProps";
+import { FontdinerSwanky_400Regular } from "@expo-google-fonts/dev";
 
 const statusColor = {
   approved: "rgba(36, 150, 137, 0.8)",
@@ -30,12 +31,35 @@ const StatusDetails = ({ route, navigation }: NavProps) => {
         <Text style={[styles.reservationDetails, { textAlign: "center" }]}>
           Reservation ID: {reservation.id}
         </Text>
-        <Text style={{ paddingTop: 20 }}>Status: {reservation.status}</Text>
-        <Text>Name of Borrower: {reservation.borrower}</Text>
-        <Text>Address: {reservation.address}</Text>
-        <Text>Purpose: {reservation.purpose}</Text>
-        <Text>Date Borrowed: {reservation.borrowDate}</Text>
-        <Text>Date Borrowed: {reservation.returnDate}</Text>
+        <View style={[styles.reservationsubDetails, { flexDirection: "row" }]}>
+          <Text style={{ fontWeight: "bold" }}>Name of Borrower: </Text>
+          <Text style={{ paddingRight: 50 }}>{reservation.borrower}</Text>
+        </View>
+        <View style={[styles.reservationsubDetails, { flexDirection: "row" }]}>
+          <Text style={{ fontWeight: "bold" }}>Address: </Text>
+          <Text style={{ paddingRight: 50, textTransform: "capitalize" }}>
+            {reservation.address}
+          </Text>
+        </View>
+        <View style={[styles.reservationsubDetails, { flexDirection: "row" }]}>
+          <Text style={{ fontWeight: "bold" }}>Purpose: </Text>
+          <Text style={{ paddingRight: 50, textTransform: "capitalize" }}>
+            {reservation.purpose}
+          </Text>
+        </View>
+        <View style={[styles.reservationsubDetails, { flexDirection: "row" }]}>
+          <Text style={{ fontWeight: "bold" }}>Date to be Borrowed: </Text>
+          <Text>{reservation.borrowDate}</Text>
+        </View>
+        <View style={[styles.reservationsubDetails, { flexDirection: "row" }]}>
+          <Text style={{ fontWeight: "bold" }}>Date to be Returned:</Text>
+          <Text> {reservation.returnDate}</Text>
+        </View>
+        <View style={[styles.reservationsubDetails]}>
+          <Text style={{ textTransform: "capitalize" }}>
+            Status: {reservation.status}
+          </Text>
+        </View>
 
         {reservation.status === "approved" && (
           <View
@@ -48,9 +72,7 @@ const StatusDetails = ({ route, navigation }: NavProps) => {
             <TouchableOpacity
               style={styles.submitButton}
               onPress={async () => {
-                const filename = await getFilenameFromDB(
-                  reservation.id
-                );
+                const filename = await getFilenameFromDB(reservation.id);
                 downloadFileFromStorage(reservation.id, filename);
               }}
             >
@@ -86,14 +108,14 @@ const StatusDetails = ({ route, navigation }: NavProps) => {
               style={{
                 // flex: 1,
                 alignItems: "center",
-                paddingTop: 140
+                paddingTop: 140,
               }}
             >
               <TouchableOpacity
                 style={styles.submitButton}
                 onPress={() => navigation.navigate("ResidentMenu")}
               >
-                <Text>I understand</Text>
+                <Text>Ok.</Text>
               </TouchableOpacity>
             </View>
           </View>
