@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "AwesomeProject",
+    "name": "Brgy Kauswagan Reservation System",
     "slug": "AwesomeProject",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "default",
-    "icon": "./src/assets/images/icon.png",
+    "icon": "./src/assets/images/LOGO.png",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./src/assets/images/icon.png",
+      "image": "./src/assets/images/LOGO.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
