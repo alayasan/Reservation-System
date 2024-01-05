@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import styles from "../../../styles";
-import { downloadFileFromStorage } from "./downloadFile/downloadfile";
-import { getFilenameFromDB } from "./downloadFile/getfilename";
-import { ref, onValue } from "firebase/database";
-import { FIREBASE_DATABASE } from "../../../../firebaseConfig";
+import { ref, update } from "firebase/database";
 import { NavProps } from "../../../interface/navProps";
-import { FontdinerSwanky_400Regular } from "@expo-google-fonts/dev";
+import { FIREBASE_DATABASE } from "../../../../firebaseConfig";
 
 const statusColor = {
   approved: "rgba(36, 150, 137, 0.8)",
   rejected: "rgba(255, 89, 99, 1)",
   pending: "rgba(224, 227, 231, 100)",
+  returned: "rgba(249, 207, 88, 1)",
 };
 
 const StatusDetails = ({ route, navigation }: NavProps) => {
@@ -42,10 +40,14 @@ const StatusDetails = ({ route, navigation }: NavProps) => {
           </Text>
         </View>
         <View style={[styles.reservationsubDetails, { flexDirection: "row" }]}>
-          <Text style={{ fontWeight: "bold" }}>Purpose: </Text>
-          <Text style={{ paddingRight: 50, textTransform: "capitalize" }}>
-            {reservation.purpose}
+          <Text style={{ fontWeight: "bold" }}>Venue to be used: </Text>
+          <Text style={{ paddingRight: 50 }}>
+            {reservation.venue}
           </Text>
+        </View>
+        <View style={[styles.reservationsubDetails, { flexDirection: "row" }]}>
+          <Text style={{ fontWeight: "bold" }}>Purpose: </Text>
+          <Text style={{ paddingRight: 50 }}>{reservation.purpose}</Text>
         </View>
         <View style={[styles.reservationsubDetails, { flexDirection: "row" }]}>
           <Text style={{ fontWeight: "bold" }}>Date to be Borrowed: </Text>
@@ -55,9 +57,10 @@ const StatusDetails = ({ route, navigation }: NavProps) => {
           <Text style={{ fontWeight: "bold" }}>Date to be Returned:</Text>
           <Text> {reservation.returnDate}</Text>
         </View>
-        <View style={[styles.reservationsubDetails]}>
+        <View style={[styles.reservationsubDetails, { flexDirection: "row" }]}>
+          <Text style={{ fontWeight: "bold" }}>Status: </Text>
           <Text style={{ textTransform: "capitalize" }}>
-            Status: {reservation.status}
+            {reservation.status}
           </Text>
         </View>
 
@@ -70,13 +73,50 @@ const StatusDetails = ({ route, navigation }: NavProps) => {
             }}
           >
             <TouchableOpacity
-              style={styles.submitButton}
-              onPress={async () => {
-                const filename = await getFilenameFromDB(reservation.id);
-                downloadFileFromStorage(reservation.id, filename);
+              style={[styles.submitButton, { width: "60%" }]}
+              onPress={() => {
+                console.log("reservationId:", reservation.id);
+                console.log("userId:", reservation.uid);
+
+                Alert.alert("Confirmation", "Have you returned the items?", [
+                  {
+                    text: "No",
+                    style: "cancel",
+                  },
+                  {
+                    text: "Yes",
+                    onPress: () => {
+                      const reservationRef = ref(
+                        FIREBASE_DATABASE,
+                        `reservations/${userId}/${reservation.id}`
+                      );
+                      update(reservationRef, { status: "returned" })
+                        .then(() => {
+                          Alert.alert(
+                            "Success!",
+                            "Thank you for returning the items.",
+                            [
+                              {
+                                text: "OK",
+                                onPress: () =>
+                                  navigation.navigate("Status"),
+                              },
+                            ]
+                          );
+                        })
+                        .catch((error) =>
+                          console.error(
+                            "Error updating reservation status:",
+                            error
+                          )
+                        );
+                    },
+                    style: "default",
+                  },
+                ]);
               }}
             >
-              <Text>Download File</Text>
+              <Text style={{ textAlign: "center" }}>Return items</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -87,7 +127,7 @@ const StatusDetails = ({ route, navigation }: NavProps) => {
               style={[
                 styles.checkboxContainer,
                 {
-                  height: "40%",
+                  height: "30%",
                   marginTop: 20,
                   alignItems: "flex-start",
                   padding: 20,

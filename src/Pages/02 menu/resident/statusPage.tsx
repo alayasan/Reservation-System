@@ -7,10 +7,12 @@ import { NavProps } from "../../../interface/navProps";
 
 const StatusPage = ({ navigation }: NavProps) => {
   const [reservations, setReservations] = useState<any[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const user = FIREBASE_AUTH.currentUser;
     if (user) {
+      setUserId(user.uid);
       const reservationsRef = ref(
         FIREBASE_DATABASE,
         `reservations/${user.uid}`
@@ -38,7 +40,10 @@ const StatusPage = ({ navigation }: NavProps) => {
       {reservations.map((reservation) => (
         <TouchableOpacity
           key={reservation.id}
-          onPress={() => navigation.navigate("Status Details", { reservation })}
+          onPress={() => {
+            console.log("userId:", FIREBASE_AUTH.currentUser?.uid);
+            navigation.navigate("Status Details", { reservation, userId });
+          }}
         >
           <View
             style={{
@@ -54,6 +59,8 @@ const StatusPage = ({ navigation }: NavProps) => {
                   ? "rgba(36, 150, 137, 0.8)"
                   : reservation.status === "rejected"
                   ? "rgba(255, 89, 99, 1)"
+                  : reservation.status === "returned"
+                  ? "rgba(249, 207, 88, 1)"
                   : "rgba(224, 227, 231, 100)",
             }}
           >

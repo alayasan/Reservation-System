@@ -110,16 +110,17 @@ export default StyleSheet.create({
     paddingHorizontal: 10,
   },
   approvalContainer: {
-    padding: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 15,
+    marginVertical: 2,
+    marginHorizontal: 10,
     borderRadius: 10,
-    backgroundColor: "rgba(128, 128, 128, 0.1)",
-    margin: 5,
-    borderColor: "black",
-    borderWidth: 1,
   },
 
   textApprovalPage: {
-    fontSize: 18,
+    fontSize: 16,
   },
 
   reservationDetails: {

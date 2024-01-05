@@ -32,6 +32,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
   const [activePhonenumber, setActivePhonenumber] = useState("");
   const [borrower, setBorrower] = useState("");
   const [address, setAddress] = useState("");
+  const [venue, setVenue] = useState("");
   const [purpose, setPurpose] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -120,7 +121,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
   };
 
   const handleSubmit = async () => {
-    if ( !activePhonenumber || !purpose || !borrowDate || !returnDate) {
+    if ( !venue || !activePhonenumber || !purpose || !borrowDate || !returnDate) {
       console.error("All fields are required.");
       setIsButtonDisabled(true);
       return;
@@ -136,6 +137,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
         await set(newReservationRef, {
           borrower: `${getUser.firstname} ${getUser.lastname}`,
           address: `${getUser.address}`,
+          venue,
           purpose,
           borrowDate: borrowDate.toLocaleDateString(),
           returnDate: returnDate.toLocaleDateString(),
@@ -160,8 +162,8 @@ const ReservationPage = ({ navigation }: NavProps) => {
           `Your reservation form has been submitted successfully. Your reservation ID is ${newReservationRef.key}.`,
           [
             {
-              text: "Go to Main Menu",
-              onPress: () => navigation.navigate("ResidentMenu"),
+              text: "Great!",
+              onPress: () => navigation.navigate("Status"),
             },
           ]
         );
@@ -219,15 +221,24 @@ const ReservationPage = ({ navigation }: NavProps) => {
             style={[styles.textInput, { width: "100%", height: 60 }]}
             onChangeText={(borrower) => setBorrower(borrower)}
           ></TextInput>
+
           <TextInput
             label="Address"
             value={getUser ? `${getUser.address}` : ""}
             editable={false}
-            style={[styles.textInput, { width: "100%", height: 70 }]}
-            multiline
-            numberOfLines={2}
+            style={[styles.textInput, { width: "100%", height: 100 }]}
+            multiline={true}
+            numberOfLines={4}
             onChangeText={(address) => setAddress(address)}
           ></TextInput>
+
+          <TextInput
+            label="Venue to be used"
+            onChangeText={(VenueInput) => setVenue(VenueInput)}
+            style={[styles.textInput, { width: "100%", height: 70 }]}
+            value={venue}
+            theme={theme}
+          />
 
           <TextInput
             label="Contact Number"
@@ -258,7 +269,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
               fontWeight: "bold",
             }}
           >
-            Date of Borrowing: Date of Return:
+            Date of Borrowing:                      Date of Return:
           </Text>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
@@ -461,16 +472,33 @@ const ReservationPage = ({ navigation }: NavProps) => {
           </View>
           <View style={{ alignItems: "center", flex: 1 }}>
             <TouchableOpacity
-              style={[
-                styles.submitButton,
-              ]}
+              style={[styles.submitButton]}
               disabled={
-              !activePhonenumber || !purpose || !borrowDate || !returnDate
+                !venue ||
+                !activePhonenumber ||
+                !purpose ||
+                !borrowDate ||
+                !returnDate
               }
               onPress={() => {
-                handleSubmit();
-                console.log("Pressed!");
-                // navigation.navigate("Upload Proof");
+                Alert.alert(
+                  "Confirmation",
+                  "Are you sure you want to submit this reservation?",
+                  [
+                    {
+                      text: "No",
+                      style: "cancel",
+                    },
+                    {
+                      text: "Yes",
+                      onPress: () => {
+                        handleSubmit();
+                        console.log("Pressed!");
+                        // navigation.navigate("Upload Proof");
+                      },
+                    },
+                  ]
+                );
               }}
             >
               <Text

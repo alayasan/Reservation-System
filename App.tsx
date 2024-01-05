@@ -20,6 +20,7 @@ import ApprovalPage from "./src/pages/02 menu/admin/approvalPage";
 import ReservationDetails from "./src/pages/02 menu/admin/reservationDetails";
 import UploadDocument from "./src/pages/02 menu/admin/uploadDocument";
 import Rejectpage from "./src/pages/02 menu/admin/reject";
+import RemarksApprove from "./src/pages/02 menu/admin/remarksApprove";
 
 const Stack = createNativeStackNavigator();
 const AdminStack = createNativeStackNavigator();
@@ -100,6 +101,11 @@ export default function App() {
                   component={Rejectpage}
                   options={{ headerShown: false }}
                 />
+                <AdminStack.Screen
+                  name="Remarks"
+                  component={RemarksApprove}
+                  options={{ headerShown: false }}
+                />
               </AdminStack.Navigator>
             )}
           </Stack.Screen>
@@ -122,7 +128,7 @@ export default function App() {
                     headerTransparent: true,
                     headerTitle: "",
                     headerBackTitleVisible: false,
-                    headerTintColor: "#000", // Change this color to match your design
+                    headerTintColor: "#000",
                   }}
                 />
               </ResidentStack.Navigator>

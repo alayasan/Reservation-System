@@ -7,16 +7,35 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavProps } from "../../../interface/navProps";
 import styles from "../../../styles";
 import { TextInput } from "react-native-paper";
 import { ref, update } from "firebase/database";
 import { FIREBASE_DATABASE } from "../../../../firebaseConfig";
+import { Ionicons } from "@expo/vector-icons";
 
 const Rejectpage = ({ route, navigation }: NavProps) => {
   const [reason, setReason] = useState("");
   const { userId, reservationId } = route.params;
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      headerTitle: "",
+      headerStyle: { backgroundColor: "rgba(255, 89, 99, 1)", elevation: 0 },
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons
+            name="arrow-back"
+            size={25}
+            color="white"
+            style={{ marginLeft: 10 }}
+          />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -37,7 +56,7 @@ const Rejectpage = ({ route, navigation }: NavProps) => {
             onChangeText={(text) => setReason(text)}
           ></TextInput>
           <TouchableOpacity
-            style={{ borderRadius: 50, padding: 10, paddingTop: 80 }}
+            style={{ borderRadius: 50, padding: 10, paddingTop: 50 }}
             onPress={() => {
               Alert.alert(
                 "Confirm Rejection",
@@ -65,9 +84,7 @@ const Rejectpage = ({ route, navigation }: NavProps) => {
                                 text: "OK",
                                 onPress: () => {
                                   console.log("OK Pressed");
-                                  navigation.navigate(
-                                    "AdminMenu"
-                                  );
+                                  navigation.navigate("AdminMenu");
                                 },
                               },
                             ]

@@ -6,6 +6,7 @@ import { FIREBASE_AUTH, FIREBASE_DB } from "../../../../firebaseConfig";
 import styles from "../../../styles";
 import { signOut } from "firebase/auth";
 import { NavProps } from "../../../interface/navProps";
+import { Ionicons } from "@expo/vector-icons";
 
 export function Profile({ navigation }: NavProps) {
   const [user, setUser] = useState(null);
@@ -33,7 +34,7 @@ export function Profile({ navigation }: NavProps) {
   const handleLogout = async () => {
     try {
       await signOut(FIREBASE_AUTH);
-      navigation.navigate("LoginForm"); // navigate back to login screen
+      navigation.navigate("LoginForm");
       console.log("User signed out");
 
       navigation.reset({
@@ -49,28 +50,21 @@ export function Profile({ navigation }: NavProps) {
     <SafeAreaView style={{ flex: 1 }}>
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: "column",
           alignItems: "center",
+          alignContent: "center",
           margin: 20,
           // marginTop: 50,
         }}
       >
-        <Image
-          style={{
-            width: 100,
-            height: 100,
-            borderRadius: 50,
-          }}
-          source={{
-            uri: "https://via.placeholder.com/100",
-          }}
-        />
-        <View style={{ marginLeft: 10 }}>
-          <Text style={{ textTransform: "capitalize" }}>
+        <Ionicons name="person-circle" size={200} color="black" />
+        <View style={[styles.checkboxContainer, { flexDirection: "column", padding: 10}]}>
+          <Text style={{ textTransform: "capitalize", textAlign: "center" }}>
             {user?.firstname} {user?.lastname}
           </Text>
-          <Text>{user?.phonenumber}</Text>
-          <Text>{user?.email}</Text>
+          <Text style={{ textAlign: "center" }}>Phone Number: {user?.phonenumber}</Text>
+          <Text style={{ textAlign: "center" }}>Email: {user?.email}</Text>
+          <Text style={{ textAlign: "center", textTransform:"capitalize" }}>Address: {user?.address}</Text>
         </View>
       </View>
       <View

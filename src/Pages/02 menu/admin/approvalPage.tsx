@@ -4,6 +4,7 @@ import { ref, onValue, DataSnapshot, get } from "firebase/database";
 import { FIREBASE_DATABASE } from "../../../../firebaseConfig";
 import styles from "../../../styles";
 import { NavProps } from "../../../interface/navProps";
+import { Ionicons } from "@expo/vector-icons";
 
 const ApprovalPage = ({ navigation }: NavProps) => {
   type Reservation = { id: string; [key: string]: any };
@@ -33,10 +34,8 @@ const ApprovalPage = ({ navigation }: NavProps) => {
         });
 
         Promise.all(fetchReservations).then((reservations) => {
-          const pendingReservations = reservations
-            .flat()
-            .filter((reservation) => reservation.status === "pending");
-          setReservations(pendingReservations);
+          const allReservations = reservations.flat();
+          setReservations(allReservations);
         });
       }
     };
@@ -63,11 +62,40 @@ const ApprovalPage = ({ navigation }: NavProps) => {
               });
             }}
           >
-            <View style={styles.parentContainer}>
-              <View style={styles.approvalContainer}>
-                <Text style={styles.textApprovalPage}>{item.id}</Text>
+              <View
+                style={[
+                  styles.approvalContainer,
+                  {
+                    backgroundColor:
+                      item.status === "approved"
+                        ? "rgba(36, 150, 137, 0.8)"
+                        : item.status === "rejected"
+                        ? "rgba(255, 89, 99, 1)"
+                        : item.status === "returned"
+                        ? "rgba(249, 207, 88, 1)"
+                        : "rgba(224, 227, 231, 100)",
+                  },
+                ]}
+              >
+                <View>
+                  <Text style={styles.textApprovalPage}>
+                    Reservation ID: {item.id}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.textApprovalPage,
+                      { textTransform: "capitalize" },
+                    ]}
+                  >
+                    Status: {item.status}
+                  </Text>
+                </View>
+                <Ionicons
+                  name="chevron-forward-outline"
+                  size={24}
+                  color="black"
+                />
               </View>
-            </View>
           </TouchableOpacity>
         )}
       />

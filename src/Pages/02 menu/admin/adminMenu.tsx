@@ -12,12 +12,16 @@ import AdminMenuPage from "./mainMenu";
 const Tab = createBottomTabNavigator();
 
 const AdminMenu = ({ navigation }: NavProps) => {
-  const auth = FIREBASE_AUTH;
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      navigation.navigate("LoginForm"); // navigate back to login screen
+      await signOut(FIREBASE_AUTH);
+      navigation.navigate("LoginForm");
       console.log("User signed out");
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "LoginForm" }],
+      });
     } catch (error) {
       console.error("Error signing out: ", error);
     }
@@ -43,10 +47,17 @@ const AdminMenu = ({ navigation }: NavProps) => {
           ),
         }}
       />
-      <Tab.Screen name="Logout" options={{ title: "Logout" }}>
+      <Tab.Screen
+        name="Logout"
+        options={{
+          title: "Logout",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="log-out" color={color} size={size} />
+          ),
+        }}
+      >
         {() => (
           <View style={[styles.container]}>
-            <Text>Admin Menu.</Text>
             <Button
               mode="elevated"
               onPress={handleLogout}
