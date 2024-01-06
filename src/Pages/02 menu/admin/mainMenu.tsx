@@ -17,7 +17,7 @@ const AdminMenuPage = ({ navigation }: NavProps) => {
           borderWidth: 1,
         }}
         labelStyle={{ color: "black" }}
-        onPress={() => navigation.navigate("Reservation Forms Submitted")}
+        onPress={() => navigation.navigate("Reservation Forms")}
       >
         Check Reservations Submitted!
       </Button>

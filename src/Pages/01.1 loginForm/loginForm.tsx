@@ -9,7 +9,7 @@ import { NavProps } from "../../interface/navProps";
 import { ActivityIndicator, Button, Text, TextInput } from "react-native-paper";
 import styles from "../../styles";
 import { useEffect, useState } from "react";
-import { Image, BackHandler, ToastAndroid } from "react-native";
+import { Image } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../firebaseConfig";
 import { getDoc, doc } from "firebase/firestore";
@@ -141,7 +141,7 @@ export const LoginFormScreen = ({ navigation }: NavProps) => {
         />
 
         {loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color="rgba(249, 207, 88, 1)" />
         ) : (
           <>
             <Button

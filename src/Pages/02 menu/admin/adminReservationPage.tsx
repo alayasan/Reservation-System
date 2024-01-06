@@ -1,58 +1,57 @@
-import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ref, onValue, DataSnapshot, get } from "firebase/database";
 import { FIREBASE_AUTH, FIREBASE_DATABASE } from "../../../../firebaseConfig";
-import { ref, onValue, DataSnapshot } from "firebase/database";
-import { Ionicons } from "@expo/vector-icons";
+import styles from "../../../styles";
 import { NavProps } from "../../../interface/navProps";
+import { Ionicons } from "@expo/vector-icons";
 import { IconButton, Menu } from "react-native-paper";
 
-const StatusPage = ({ navigation }: NavProps) => {
-  const [reservations, setReservations] = useState<any[]>([]);
-  const [userId, setUserId] = useState<string | null>(null);
-  const [dropDownMenu, setDropdownMenu] = useState("");
+const AdminReservationPage = ({ navigation }: NavProps) => {
+  type Reservation = { id: string; [key: string]: any };
 
-  const [visible, setVisible] = useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
+  const [visible, setVisible] = useState(false);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [dropDownMenu, setDropdownMenu] = useState("");
 
   const fetchReservationsByStatus = (status: string) => {
     setDropdownMenu(status);
-    const user = FIREBASE_AUTH.currentUser;
-    if (user) {
-      const reservationsRef = ref(
-        FIREBASE_DATABASE,
-        `reservations/${user.uid}`
-      );
+    const reservationsRef = ref(FIREBASE_DATABASE, `reservations`);
 
-      const handleData = (snap: DataSnapshot) => {
-        if (snap.val()) {
-          const reservationObjects = snap.val();
-          let reservationList = Object.keys(reservationObjects).map(
-            (key) => ({
-              ...reservationObjects[key],
-              id: key,
-            })
-          );
+    const handleData = (snap: DataSnapshot) => {
+      if (snap.val()) {
+        const reservationObjects = snap.val();
+        let reservationList = Object.keys(reservationObjects).map((userId) =>
+          Object.keys(reservationObjects[userId]).map((reservationId) => ({
+            ...reservationObjects[userId][reservationId],
+            id: reservationId,
+            userId: userId,
+          }))
+        );
 
-          reservationList = reservationList.sort((a, b) => {
-            const dateA = new Date(a.timestamp);
-            const dateB = new Date(b.timestamp);
-            return dateB.getTime() - dateA.getTime();
-          });
+        reservationList = reservationList.flat();
+        reservationList = reservationList.sort((a, b) => {
+          const dateA = new Date(a.timestamp);
+          const dateB = new Date(b.timestamp);
+          return dateB.getTime() - dateA.getTime();
+        });
 
-          const filteredReservations =
-            status == "All"
-              ? reservationList
-              : reservationList.filter(
-                  (reservation) => reservation.status === status
-                );
-          setReservations(filteredReservations);
-        }
-      };
+        // Filter the reservations to only include those with the selected status
+        const filteredReservations =
+          status === "All"
+            ? reservationList
+            : reservationList.filter(
+                (reservation) => reservation.status === status
+              );
 
-      const unsubscribe = onValue(reservationsRef, handleData, {});
-      return () => unsubscribe();
-    }
+        setReservations(filteredReservations);
+      }
+    };
+
+    const unsubscribe = onValue(reservationsRef, handleData, {});
+    return () => unsubscribe();
   };
 
   // dropdown menu
@@ -121,11 +120,7 @@ const StatusPage = ({ navigation }: NavProps) => {
   }, [navigation, visible]);
 
   useEffect(() => {
-    const user = FIREBASE_AUTH.currentUser;
-    if (user) {
-      setUserId(user.uid);
-      fetchReservationsByStatus("All");
-    }
+    fetchReservationsByStatus("All");
   }, []);
 
   return (
@@ -146,36 +141,41 @@ const StatusPage = ({ navigation }: NavProps) => {
         <TouchableOpacity
           key={reservation.id}
           onPress={() => {
-            console.log("userId:", FIREBASE_AUTH.currentUser?.uid);
-            navigation.navigate("Status Details", { reservation, userId });
+            console.log("userId:", reservation.userId);
+            navigation.navigate("Reservation Details", {
+              reservationId: reservation.id,
+              reservationData: reservation,
+              userId: reservation.userId,
+            });
           }}
         >
           <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 15,
-              marginVertical: 2,
-              marginHorizontal: 10,
-              borderRadius: 10,
-              backgroundColor:
-                reservation.status === "approved"
-                  ? "rgba(36, 150, 137, 0.8)"
-                  : reservation.status === "rejected"
-                  ? "rgba(255, 89, 99, 1)"
-                  : reservation.status === "returned"
-                  ? "rgba(238, 139, 96, 1)"
-                  : reservation.status == "completed"
-                  ? "rgba(249, 207, 88, 1)"
-                  : "rgba(224, 227, 231, 100)",
-            }}
+            style={[
+              styles.approvalContainer,
+              {
+                backgroundColor:
+                  reservation.status === "approved"
+                    ? "rgba(36, 150, 137, 0.8)"
+                    : reservation.status === "rejected"
+                    ? "rgba(255, 89, 99, 1)"
+                    : reservation.status === "returned"
+                    ? "rgba(238, 139, 96, 1)"
+                    : reservation.status == "completed"
+                    ? "rgba(249, 207, 88, 1)"
+                    : "rgba(224, 227, 231, 100)",
+              },
+            ]}
           >
             <View>
-              <Text style={{ fontSize: 16 }}>
+              <Text style={styles.textApprovalPage}>
                 Reservation ID: {reservation.id}
               </Text>
-              <Text style={{ fontSize: 16, textTransform: "capitalize" }}>
+              <Text
+                style={[
+                  styles.textApprovalPage,
+                  { textTransform: "capitalize" },
+                ]}
+              >
                 Status: {reservation.status}
               </Text>
             </View>
@@ -187,4 +187,4 @@ const StatusPage = ({ navigation }: NavProps) => {
   );
 };
 
-export default StatusPage;
+export default AdminReservationPage;

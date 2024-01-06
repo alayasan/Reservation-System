@@ -15,15 +15,15 @@ import { ref, update } from "firebase/database";
 import { FIREBASE_DATABASE } from "../../../../firebaseConfig";
 import { Ionicons } from "@expo/vector-icons";
 
-const RemarksReject = ({ route, navigation }: NavProps) => {
-  const [reason, setReason] = useState("");
+const RemarksApprove = ({ route, navigation }: NavProps) => {
+  const [remarks, setRemarks] = useState("");
   const { userId, reservationId } = route.params;
 
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
       headerTitle: "",
-      headerStyle: { backgroundColor: "rgba(255, 89, 99, 1)", elevation: 0 },
+      headerStyle: { backgroundColor: "rgba(36, 150, 137, 0.8)", elevation: 0 },
       headerLeft: () => (
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons
@@ -39,28 +39,28 @@ const RemarksReject = ({ route, navigation }: NavProps) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.backgroundReject}>
+      <View style={styles.backgroundApprove}>
         <View style={[styles.content, { alignItems: "center" }]}>
           <Text style={[styles.upload, { marginTop: 10, marginBottom: 20 }]}>
-            Reason for Rejection
+            Remarks
           </Text>
           <TextInput
-            label="Reason"
+            label=" "
             style={[
               styles.textInput,
               { width: "100%", height: 100, borderRadius: 5 },
             ]}
-            value={reason}
+            value={remarks}
             multiline
             numberOfLines={4}
-            onChangeText={(text) => setReason(text)}
+            onChangeText={(text) => setRemarks(text)}
           ></TextInput>
           <TouchableOpacity
             style={{ borderRadius: 50, padding: 10, paddingTop: 50 }}
             onPress={() => {
               Alert.alert(
-                "Confirm Rejection",
-                "Are you sure you want to reject this reservation?",
+                "Approve Reservation",
+                "Are you sure you want to approve this reservation?",
                 [
                   {
                     text: "Cancel",
@@ -68,20 +68,20 @@ const RemarksReject = ({ route, navigation }: NavProps) => {
                     style: "cancel",
                   },
                   {
-                    text: "Reject",
+                    text: "Approve",
                     onPress: () => {
                       const reservationRef = ref(
                         FIREBASE_DATABASE,
                         `reservations/${userId}/${reservationId}`
                       );
                       update(reservationRef, {
-                        rejectionReason: reason,
-                        status: "rejected",
+                        remarks: remarks,
+                        status: "approved",
                       })
                         .then(() => {
                           Alert.alert(
-                            "Reservation Rejected",
-                            "The reservation has been successfully rejected.",
+                            "Reservation Approved",
+                            "The reservation has been successfully approved.",
                             [
                               {
                                 text: "OK",
@@ -94,10 +94,7 @@ const RemarksReject = ({ route, navigation }: NavProps) => {
                           );
                         })
                         .catch((error) =>
-                          console.error(
-                            "Error updating rejection reason:",
-                            error
-                          )
+                          console.error("Error updating remarks:", error)
                         );
                     },
                   },
@@ -106,7 +103,7 @@ const RemarksReject = ({ route, navigation }: NavProps) => {
             }}
           >
             <Image
-              source={require("../../../assets/images/cross.png")}
+              source={require("../../../assets/images/check.png")}
               style={{ width: 60, height: 60 }}
             />
           </TouchableOpacity>
@@ -116,4 +113,4 @@ const RemarksReject = ({ route, navigation }: NavProps) => {
   );
 };
 
-export default RemarksReject;
+export default RemarksApprove;

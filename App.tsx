@@ -16,11 +16,11 @@ import AdminMenu from "./src/pages/02 menu/admin/adminMenu";
 import ResidentMenu from "./src/pages/02 menu/resident/residentMenu";
 import StatusDetails from "./src/pages/02 menu/resident/statusDetails";
 import ReservationPage from "./src/pages/02 menu/resident/reservationForm";
-import ApprovalPage from "./src/pages/02 menu/admin/approvalPage";
-import ReservationDetails from "./src/pages/02 menu/admin/reservationDetails";
+import AdminReservationPage from "./src/pages/02 menu/admin/adminReservationPage";
+import AdminReservationDetails from "./src/pages/02 menu/admin/adminReservationDetails";
 import UploadDocument from "./src/pages/02 menu/admin/uploadDocument";
-import Rejectpage from "./src/pages/02 menu/admin/reject";
-import RemarksApprove from "./src/pages/02 menu/admin/remarksApprove";
+import RemarksReject from "./src/pages/02 menu/admin/reject";
+import RemarksApprove from "./src/pages/02 menu/admin/approve";
 
 const Stack = createNativeStackNavigator();
 const AdminStack = createNativeStackNavigator();
@@ -83,12 +83,12 @@ export default function App() {
                   options={{ headerShown: false }}
                 />
                 <AdminStack.Screen
-                  name="Reservation Forms Submitted"
-                  component={ApprovalPage}
+                  name="Reservation Forms"
+                  component={AdminReservationPage}
                 />
                 <AdminStack.Screen
                   name="Reservation Details"
-                  component={ReservationDetails}
+                  component={AdminReservationDetails}
                   options={{ headerTitle: "" }}
                 />
                 <AdminStack.Screen
@@ -98,11 +98,11 @@ export default function App() {
                 />
                 <AdminStack.Screen
                   name="Reject"
-                  component={Rejectpage}
+                  component={RemarksReject}
                   options={{ headerShown: false }}
                 />
                 <AdminStack.Screen
-                  name="Remarks"
+                  name="Approve"
                   component={RemarksApprove}
                   options={{ headerShown: false }}
                 />

@@ -10,95 +10,65 @@ import React, { useEffect, useState } from "react";
 import styles from "../../../styles";
 import "firebase/database";
 import { FIREBASE_DATABASE } from "../../../../firebaseConfig";
-import { ref, update } from "firebase/database";
+import { ref, set, update } from "firebase/database";
 import { NavProps } from "../../../interface/navProps";
 
 type Reservation = { [key: string]: any };
 
-const ReservationDetails = ({ route, navigation }: NavProps) => {
+const AdminReservationDetails = ({ route, navigation }: NavProps) => {
   const { reservationId, reservationData, userId } = route.params;
   const [reservation, setReservation] = useState<Reservation | null>(
     reservationData
   );
 
-  // const approveReservation = () => {
-  //   console.log("Approve button pressed");
-  //   console.log("userId:", userId);
-  //   console.log("reservationId:", reservationId);
-
-  //   const reservationRef = ref(
-  //     FIREBASE_DATABASE,
-  //     `reservations/${userId}/${reservationId}`
-  //   );
-  //   update(reservationRef, { status: "approved" })
-  //     .then(() => {
-  //       console.log("Reservation status updated to approved");
-  //       navigation.navigate("Upload Document", {
-  //         reservationId: reservationId,
-  //         userId: userId,
-  //       });
-  //     })
-  //     .catch((error) =>
-  //       console.error("Error updating reservation status:", error)
-  //     );
-  // };
-
   const approveReservation = () => {
-    Alert.alert(
-      "Confirm Approval",
-      "Are you sure you want to approve this reservation?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            const reservationRef = ref(
-              FIREBASE_DATABASE,
-              `reservations/${userId}/${reservationId}`
-            );
-            update(reservationRef, { status: "approved" })
-              .then(() => {
-                Alert.alert(
-                  "Confirmation",
-                  "The reservation has been approved.",
-                  [
-                    {
-                      text: "OK",
-                      onPress: () => navigation.navigate("AdminMenu"),
-                    },
-                  ]
-                );
-              })
-              .catch((error) =>
-                console.error("Error updating reservation status:", error)
-              );
-          },
-        },
-      ]
-    );
+    console.log("Approve button pressed");
+    navigation.navigate("Approve", {
+      userId: userId,
+      reservationId: reservationId,
+    });
   };
 
   const rejectReservation = () => {
     console.log("Reject button pressed");
+    navigation.navigate("Reject", {
+      userId: userId,
+      reservationId: reservationId,
+    });
+  };
 
-    const reservationRef = ref(
-      FIREBASE_DATABASE,
-      `reservations/${userId}/${reservationId}`
+  const handleConfirm = () => {
+    Alert.alert(
+      "Confirm Return",
+      "Are you sure the user has returned the items?",
+      [
+        {
+          text: "No",
+          style: "cancel",
+        },
+        {
+          text: "Yes",
+          onPress: () => {
+            // Get a reference to the reservation in the database
+            const reservationRef = ref(
+              FIREBASE_DATABASE,
+              `reservations/${userId}/${reservationId}`
+            );
+
+            set(reservationRef, {
+              ...reservation,
+              status: "completed",
+            });
+            Alert.alert(
+              "Confirmation",
+              "The reservation form is confirmed and the items are successfully returned!"
+            );
+            navigation.goBack();
+          },
+        },
+      ],
+      { cancelable: false }
     );
-    update(reservationRef, { status: "rejected" })
-      .then(() => {
-        console.log("Reservation status updated to rejected");
-        navigation.navigate("Reject", {
-          userId: userId,
-          reservationId: reservationId,
-        });
-      })
-      .catch((error) =>
-        console.error("Error updating reservation status:", error)
-      );
   };
 
   return (
@@ -220,11 +190,18 @@ const ReservationDetails = ({ route, navigation }: NavProps) => {
       >
         {reservation?.status === "rejected" && (
           <View
-            style={{ backgroundColor: "rgba(255, 89, 99, 1)", padding: 10, borderRadius: 10 }}
+            style={{
+              backgroundColor: "rgba(255, 89, 99, 1)",
+              padding: 10,
+              borderRadius: 10,
+            }}
           >
-            <Text style={{ color: "white" }}>Rejection Reason: {reservation.rejectionReason}</Text>
+            <Text style={{ color: "white" }}>
+              Rejection Reason: {reservation.rejectionReason}
+            </Text>
           </View>
         )}
+
         {reservation?.status === "pending" && (
           <>
             <TouchableOpacity
@@ -251,9 +228,15 @@ const ReservationDetails = ({ route, navigation }: NavProps) => {
             </TouchableOpacity>
           </>
         )}
+
+        {reservation?.status === "returned" && (
+          <TouchableOpacity style={styles.submitButton} onPress={handleConfirm}>
+            <Text>Confirm</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </ScrollView>
   );
 };
 
-export default ReservationDetails;
+export default AdminReservationDetails;

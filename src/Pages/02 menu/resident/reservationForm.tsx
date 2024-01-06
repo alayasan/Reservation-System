@@ -14,10 +14,14 @@ import React, { useEffect, useState } from "react";
 import Checkbox from "react-native-check-box";
 import styles from "../../../styles";
 import { NavProps } from "../../../interface/navProps";
-import { DefaultTheme, TextInput } from "react-native-paper";
+import { ActivityIndicator, DefaultTheme, TextInput } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { push, ref, set } from "firebase/database";
-import { FIREBASE_AUTH, FIREBASE_DATABASE, FIREBASE_DB } from "../../../../firebaseConfig";
+import {
+  FIREBASE_AUTH,
+  FIREBASE_DATABASE,
+  FIREBASE_DB,
+} from "../../../../firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 
 const ReservationPage = ({ navigation }: NavProps) => {
@@ -71,6 +75,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
     const currentDate = selectedDate || borrowDate;
     setBorrowShow(false);
     setBorrowDate(currentDate);
+    setReturnDate(currentDate);
   };
 
   const onChangeReturn = (e: any, selectedDate: Date | undefined) => {
@@ -106,7 +111,9 @@ const ReservationPage = ({ navigation }: NavProps) => {
 
   const handleModalClose1 = () => {
     if (quantity1 === "" || isNaN(quantity1) || quantity1 === "0") {
-      Alert.alert("Please enter a valid number for the quantity of Monobloc Chairs.");
+      Alert.alert(
+        "Please enter a valid number for the quantity of Monobloc Chairs."
+      );
     } else {
       setModalVisible1(false);
     }
@@ -121,7 +128,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
   };
 
   const handleSubmit = async () => {
-    if ( !venue || !activePhonenumber || !purpose || !borrowDate || !returnDate) {
+    if (!venue || !purpose || !borrowDate || !returnDate) {
       console.error("All fields are required.");
       setIsButtonDisabled(true);
       return;
@@ -135,28 +142,30 @@ const ReservationPage = ({ navigation }: NavProps) => {
           ref(FIREBASE_DATABASE, `reservations/${user.uid}`)
         );
         await set(newReservationRef, {
-          borrower: `${getUser.firstname} ${getUser.lastname}`,
-          address: `${getUser.address}`,
+          borrower: `${getUser?.firstname} ${getUser?.lastname}`,
+          address: `${getUser?.address}`,
+          phonenumber: `${getUser?.phonenumber}`,
           venue,
           purpose,
           borrowDate: borrowDate.toLocaleDateString(),
           returnDate: returnDate.toLocaleDateString(),
-          activePhonenumber,
           status: "pending",
           type: "resident",
           items: {
-            monoblocChair: isChecked1 ? quantity1: 0,
+            monoblocChair: isChecked1 ? quantity1 : 0,
             tent: isChecked2 ? quantity2 : 0,
             soundSystem: isChecked3,
             serviceVehicle: isChecked4,
           },
-
+          timestamp: new Date().toISOString(),
         });
 
         console.log(
           "Reservation form submitted with ID: ",
           newReservationRef.key
         );
+        console.log("user id: ", user.uid);
+        console.log("current time: ", new Date().toISOString());
         Alert.alert(
           "Success ✅",
           `Your reservation form has been submitted successfully. Your reservation ID is ${newReservationRef.key}.`,
@@ -233,24 +242,21 @@ const ReservationPage = ({ navigation }: NavProps) => {
           ></TextInput>
 
           <TextInput
-            label="Venue to be used"
-            onChangeText={(VenueInput) => setVenue(VenueInput)}
-            style={[styles.textInput, { width: "100%", height: 70 }]}
-            value={venue}
-            theme={theme}
-          />
-
-          <TextInput
             label="Contact Number"
-            value={activePhonenumber}
+            value={getUser ? `${getUser.phonenumber}` : ""}
+            editable={false}
             style={[styles.textInput, { width: "100%", height: 70 }]}
             onChangeText={(activePhonenumber) =>
               setActivePhonenumber(activePhonenumber)
             }
-            keyboardType="number-pad"
-            maxLength={11}
-            theme={theme}
           ></TextInput>
+
+          <TextInput
+            label="Venue"
+            onChangeText={(VenueInput) => setVenue(VenueInput)}
+            style={[styles.textInput, { width: "100%", height: 70 }]}
+            value={venue}
+          />
 
           <TextInput
             label="Purpose/Reason to Borrow"
@@ -259,7 +265,6 @@ const ReservationPage = ({ navigation }: NavProps) => {
             multiline
             numberOfLines={3}
             onChangeText={(purpose) => setPurpose(purpose)}
-            theme={theme}
           ></TextInput>
           <Text
             style={{
@@ -269,7 +274,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
               fontWeight: "bold",
             }}
           >
-            Date of Borrowing:                      Date of Return:
+            Date of Borrowing: Date of Return:
           </Text>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
@@ -285,6 +290,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
                   testID="dateTimePickerBorrow"
                   value={borrowDate}
                   mode={mode}
+                  minimumDate={new Date()}
                   // display="default"
                   onChange={onChangeBorrow}
                 />
@@ -301,6 +307,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
                   testID="dateTimePickerReturn"
                   value={returnDate}
                   mode={mode}
+                  minimumDate={borrowDate}
                   // display="default"
                   onChange={onChangeReturn}
                 />
@@ -339,7 +346,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
               )}
             </View>
             <Modal
-              animationType="slide"
+              animationType="fade"
               transparent={true}
               visible={modalVisible1}
             >
@@ -397,7 +404,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
               )}
             </View>
             <Modal
-              animationType="slide"
+              animationType="fade"
               transparent={true}
               visible={modalVisible2}
             >
@@ -471,15 +478,12 @@ const ReservationPage = ({ navigation }: NavProps) => {
             </View>
           </View>
           <View style={{ alignItems: "center", flex: 1 }}>
+            {isLoading && (
+              <ActivityIndicator size="large" color="rgba(249, 207, 88, 1)" />
+            )}
             <TouchableOpacity
               style={[styles.submitButton]}
-              disabled={
-                !venue ||
-                !activePhonenumber ||
-                !purpose ||
-                !borrowDate ||
-                !returnDate
-              }
+              disabled={!venue || !purpose || !borrowDate || !returnDate}
               onPress={() => {
                 Alert.alert(
                   "Confirmation",
@@ -492,9 +496,8 @@ const ReservationPage = ({ navigation }: NavProps) => {
                     {
                       text: "Yes",
                       onPress: () => {
+                        setIsLoading(true);
                         handleSubmit();
-                        console.log("Pressed!");
-                        // navigation.navigate("Upload Proof");
                       },
                     },
                   ]
