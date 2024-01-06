@@ -66,7 +66,7 @@ export default StyleSheet.create({
     elevation: 3,
   },
   icon: {
-    marginLeft: 10,
+    marginLeft: 0,
   },
   imageItems: {
     width: 60,

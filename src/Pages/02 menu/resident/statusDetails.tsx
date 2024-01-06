@@ -10,7 +10,7 @@ const statusColor = {
   rejected: "rgba(255, 89, 99, 1)",
   pending: "rgba(224, 227, 231, 100)",
   returned: "rgba(238, 139, 96, 1)",
-  completed: "rgba(36, 150, 137, 0.8)",
+  completed: "rgba(249, 207, 88, 1)",
 };
 
 const StatusDetails = ({ route, navigation }: NavProps) => {
@@ -104,31 +104,27 @@ const StatusDetails = ({ route, navigation }: NavProps) => {
           </Text>
         </View>
         {reservation.status === "approved" && (
-          <View
+          <><View
             style={[styles.reservationsubDetails, { flexDirection: "row" }]}
           >
             <Text style={{ fontWeight: "bold" }}>Remarks: </Text>
             <Text style={{ textTransform: "capitalize" }}>
               {reservation.remarks}
             </Text>
-          </View>
-        )}
-
-        {reservation.status === "approved" && (
-          <View
+          </View><View
             style={{
               flex: 1,
               justifyContent: "flex-end",
               alignItems: "center",
             }}
           >
-            <TouchableOpacity
-              style={styles.submitButton}
-              onPress={handleReturnItems}
-            >
-              <Text style={{ textAlign: "center" }}>Return items</Text>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={handleReturnItems}
+              >
+                <Text style={{ textAlign: "center" }}>Return items</Text>
+              </TouchableOpacity>
+            </View></>
         )}
 
         {reservation.status === "rejected" && (
@@ -137,7 +133,7 @@ const StatusDetails = ({ route, navigation }: NavProps) => {
               style={[
                 styles.checkboxContainer,
                 {
-                  height: "30%",
+                  height: "25%",
                   marginTop: 20,
                   alignItems: "flex-start",
                   padding: 20,

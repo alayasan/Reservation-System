@@ -141,7 +141,7 @@ export const LoginFormScreen = ({ navigation }: NavProps) => {
         />
 
         {loading ? (
-          <ActivityIndicator size="large" color="rgba(249, 207, 88, 1)" />
+          <ActivityIndicator size="large" color="#0000ff" />
         ) : (
           <>
             <Button
