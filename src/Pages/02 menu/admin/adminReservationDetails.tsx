@@ -79,11 +79,11 @@ const AdminReservationDetails = ({ route, navigation }: NavProps) => {
         </Text>
         {reservation && (
           <>
-            <Text
+            {/* <Text
               style={[styles.reservationDetailsSubtext, { paddingTop: 20 }]}
             >
               Name of Borrower: {reservation.borrower}
-            </Text>
+            </Text> */}
             <Text
               style={[
                 styles.reservationDetailsSubtext,
