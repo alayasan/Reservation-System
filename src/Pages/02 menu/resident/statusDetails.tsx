@@ -104,27 +104,30 @@ const StatusDetails = ({ route, navigation }: NavProps) => {
           </Text>
         </View>
         {reservation.status === "approved" && (
-          <><View
-            style={[styles.reservationsubDetails, { flexDirection: "row" }]}
-          >
-            <Text style={{ fontWeight: "bold" }}>Remarks: </Text>
-            <Text style={{ textTransform: "capitalize" }}>
-              {reservation.remarks}
-            </Text>
-          </View><View
-            style={{
-              flex: 1,
-              justifyContent: "flex-end",
-              alignItems: "center",
-            }}
-          >
+          <>
+            <View
+              style={[styles.reservationsubDetails, { flexDirection: "row" }]}
+            >
+              <Text style={{ fontWeight: "bold" }}>Remarks: </Text>
+              <Text style={{ textTransform: "capitalize" }}>
+                {reservation.remarks}
+              </Text>
+            </View>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "flex-end",
+                alignItems: "center",
+              }}
+            >
               <TouchableOpacity
                 style={styles.submitButton}
                 onPress={handleReturnItems}
               >
                 <Text style={{ textAlign: "center" }}>Return items</Text>
               </TouchableOpacity>
-            </View></>
+            </View>
+          </>
         )}
 
         {reservation.status === "rejected" && (

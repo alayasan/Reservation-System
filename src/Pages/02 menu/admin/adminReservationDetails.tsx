@@ -96,7 +96,7 @@ const AdminReservationDetails = ({ route, navigation }: NavProps) => {
               Venue to be used: {reservation.venue}
             </Text>
             <Text style={styles.reservationDetailsSubtext}>
-              Active Phone Number: {reservation.activePhonenumber}
+              Active Phone Number: {reservation.phonenumber}
             </Text>
             <Text style={styles.reservationDetailsSubtext}>
               Purpose: {reservation.purpose}

@@ -274,7 +274,7 @@ const ReservationPage = ({ navigation }: NavProps) => {
               fontWeight: "bold",
             }}
           >
-            Date of Borrowing: Date of Return:
+            Date of Borrowing:                      Date of Return:
           </Text>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
@@ -485,23 +485,37 @@ const ReservationPage = ({ navigation }: NavProps) => {
               style={[styles.submitButton]}
               disabled={!venue || !purpose || !borrowDate || !returnDate}
               onPress={() => {
-                Alert.alert(
-                  "Confirmation",
-                  "Are you sure you want to submit this reservation?",
-                  [
-                    {
-                      text: "No",
-                      style: "cancel",
-                    },
-                    {
-                      text: "Yes",
-                      onPress: () => {
-                        setIsLoading(true);
-                        handleSubmit();
+                if (!(isChecked1 || isChecked2 || isChecked3 || isChecked4)) {
+                  Alert.alert(
+                    "No reserved items.",
+                    "Please check at least one item you want to borrow.",
+                    [
+                      {
+                        text: "OK",
+                        style: "cancel",
                       },
-                    },
-                  ]
-                );
+                    ],
+                    { cancelable: false }
+                  );
+                } else {
+                  Alert.alert(
+                    "Confirmation",
+                    "Are you sure you want to submit this reservation?",
+                    [
+                      {
+                        text: "No",
+                        style: "cancel",
+                      },
+                      {
+                        text: "Yes",
+                        onPress: () => {
+                          setIsLoading(true);
+                          handleSubmit();
+                        },
+                      },
+                    ]
+                  );
+                }
               }}
             >
               <Text

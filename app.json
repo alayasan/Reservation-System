@@ -2,7 +2,7 @@
   "expo": {
     "name": "Brgy Kauswagan Reservation System",
     "slug": "AwesomeProject",
-    "version": "2.1.0",
+    "version": "3.0.0",
     "orientation": "default",
     "icon": "./src/assets/images/LOGO.png",
     "userInterfaceStyle": "automatic",
